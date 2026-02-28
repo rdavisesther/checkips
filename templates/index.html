@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+<head>
+    <title>IP Provider Checker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            margin:0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg,#1e3c72,#2a5298);
+        }
+
+        .container {
+            max-width:1100px;
+            margin:40px auto;
+            background:white;
+            padding:25px;
+            border-radius:12px;
+            box-shadow:0 10px 30px rgba(0,0,0,.2);
+        }
+
+        h1 {
+            margin-top:0;
+        }
+
+        textarea {
+            width:100%;
+            height:140px;
+            padding:12px;
+            border-radius:8px;
+            border:1px solid #ddd;
+            resize:vertical;
+            font-size:14px;
+        }
+
+        button {
+            margin-top:10px;
+            padding:10px 18px;
+            background:#2563eb;
+            color:white;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            font-weight:bold;
+        }
+
+        button:hover {
+            background:#1d4ed8;
+        }
+
+        .error {
+            margin-top:10px;
+            color:#dc2626;
+            font-weight:bold;
+        }
+
+        table {
+            width:100%;
+            margin-top:20px;
+            border-collapse:collapse;
+        }
+
+        th {
+            background:#0f172a;
+            color:white;
+            padding:10px;
+        }
+
+        td {
+            padding:8px;
+            border-bottom:1px solid #eee;
+            font-size:13px;
+        }
+
+        tr:hover td {
+            background:#f1f5f9;
+        }
+
+        .success { color:green; font-weight:bold; }
+        .fail { color:red; font-weight:bold; }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>IP Provider Checker</h1>
+    <p>Paste IPs (one per line)</p>
+
+    <form method="post">
+        <textarea name="ips" placeholder="8.8.8.8&#10;1.1.1.1">{{ raw_ips }}</textarea>
+        <br>
+        <button type="submit">Check</button>
+    </form>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if data and data|length > 0 %}
+        <table>
+            <tr>
+                <th>IP</th>
+                <th>Status</th>
+                <th>ISP</th>
+                <th>Org</th>
+                <th>AS</th>
+                <th>Country</th>
+                <th>Region</th>
+                <th>City</th>
+            </tr>
+
+            {% for r in data %}
+            <tr>
+                <td>{{ r.query }}</td>
+                <td>
+                    {% if r.status == "success" %}
+                        <span class="success">Success</span>
+                    {% else %}
+                        <span class="fail">Fail</span>
+                    {% endif %}
+                </td>
+                <td>{{ r.isp }}</td>
+                <td>{{ r.org }}</td>
+                <td>{{ r.as }}</td>
+                <td>{{ r.country }}</td>
+                <td>{{ r.regionName }}</td>
+                <td>{{ r.city }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
